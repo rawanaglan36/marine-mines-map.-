@@ -18,7 +18,7 @@ locations = [
 # HTML
 pins_html = """
 <div style="position: relative; width: 100%; max-width: 1000px; margin: auto;">
-  <img src="https://raw.githubusercontent.com/yourusername/yourrepo/main/map.png"
+  <img src="https://imgur.com/a/7HrQBz5"
        style="width: 100%; height: auto; display: block; border-radius: 12px;" />
 """
 
