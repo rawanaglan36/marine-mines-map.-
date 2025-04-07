@@ -1,55 +1,55 @@
-# import streamlit as st
-# import folium
-# from streamlit_folium import st_folium
-
-# # بيانات المواقع
-# locations = [
-#     (24.7136, 46.6753),  # Riyadh
-#     (21.4858, 39.1925),  # Jeddah
-# ]
-
-# # إعداد الخريطة
-# m = folium.Map(location=locations[0], zoom_start=6)
-
-# # إضافة نقاط
-# for loc in locations:
-#     folium.Marker(location=loc).add_to(m)
-
-# # رسم خط يربط بينهم
-# folium.PolyLine(locations, color='blue').add_to(m)
-
-# # عرض على ستريملت
-# st.title("رحلتي على الخريطة")
-# st_folium(m, width=700, height=500)
-
 import streamlit as st
-import folium
-from streamlit_folium import st_folium
+from PIL import Image
+import streamlit.components.v1 as components
 
-# قائمة مواقع الألغام (مثال لمواقع وسط البحر)
-mine_locations = [
-    (25.0, 50.0),  # موقع 1
-    (25.5, 50.5),  # موقع 2
-    (26.0, 51.0),  # موقع 3
+# إعداد صفحة Streamlit
+st.set_page_config(page_title="رحلة أعماق المحيط", layout="wide")
+
+# --- العنوان ---
+st.title("🌊 خريطة الألغام البحرية")
+st.markdown("تتبعي المسار في أعماق البحر وتعرفي على أماكن الألغام! 💣")
+
+# --- تحميل وعرض صورة الخريطة كخلفية ---
+image_path = "map.png"  # تأكدي إن الصورة بنفس الاسم وفي نفس المجلد
+image = Image.open(image_path)
+st.image(image, use_column_width=True, caption="رحلة عبر أعماق المحيط 🐳")
+
+# --- تحديد المواقع على الصورة (تمثيل افتراضي للمواقع) ---
+locations = [
+    {"name": "لغم 1", "x": 20, "y": 30},
+    {"name": "لغم 2", "x": 45, "y": 50},
+    {"name": "لغم 3", "x": 70, "y": 60},
 ]
 
-# إنشاء خريطة بطابع بحري
-m = folium.Map(location=[25.5, 50.5], zoom_start=6, tiles="CartoDB dark_matter")
+# --- عرض المواقع باستخدام HTML مخصص مع CSS ---
+st.markdown("### ⚠️ مواقع الألغام:")
 
-# إضافة الألغام كأيقونات مخصصة
-for i, loc in enumerate(mine_locations, 1):
-    folium.Marker(
-        location=loc,
-        icon=folium.Icon(icon="exclamation-sign", color="red"),  # شكل تحذير
-        popup=f"لغم رقم {i}"
-    ).add_to(m)
+# HTML لعرض صورة مع علامات Pin
+pins_html = f"""
+<div style="position: relative; width: 100%; max-width: 800px;">
+  <img src="map.png" style="width: 100%;" />
+"""
 
-# إضافة خطوط لو حبيتي تمثلي مسار معين
-folium.PolyLine(mine_locations, color='red', dash_array='5').add_to(m)
+# إضافة كل نقطة كموقع Pin
+for loc in locations:
+    pins_html += f"""
+    <div style="
+        position: absolute;
+        left: {loc['x']}%;
+        top: {loc['y']}%;
+        transform: translate(-50%, -50%);
+        color: red;
+        font-size: 24px;
+        font-weight: bold;"
+        title="{loc['name']}">📍</div>
+    """
 
-# عرض داخل Streamlit
-st.title("مواقع الألغام البحرية 💣🌊")
-st.markdown("خريطة تفاعلية توضح أماكن الألغام المكتشفة في البحر.")
+pins_html += "</div>"
 
-# عرض الخريطة
-st_folium(m, width=700, height=500)
+# تضمين HTML داخل Streamlit
+components.html(pins_html, height=600)
+
+# زر بدء الرحلة
+if st.button("🚀 ابدأ الرحلة"):
+    st.success("🚨 الرحلة بدأت! راقبي الألغام وتقدمي بحذر...")
+
