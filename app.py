@@ -235,52 +235,55 @@ import streamlit.components.v1 as components
 # إعداد الصفحة
 st.set_page_config(page_title="Marine Mines Map", layout="wide")
 
-# إخفاء عناصر Streamlit الافتراضية وتخصيص الزر
-hide_st_style = """
-    <style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    .stButton>button {
-        position: fixed;
-        bottom: 50%;
-        left: 50%;
-        transform: translate(-50%, 50%);
-        z-index: 1000;
-        font-size: 28px;
-        padding: 15px 30px;
-        background-color: #007BFF;
-        color: white;
-        border: none;
-        border-radius: 10px;
-        box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    .stButton>button:hover {
-        background-color: #0056b3;
-        transform: translate(-50%, 50%) scale(1.05);
-    }
-    html, body, [class*="css"]  {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-    }
-    iframe {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        border: none;
-    }
-    </style>
+# CSS مخصص لضبط الخلفية والزر
+custom_css = """
+<style>
+#MainMenu, footer, header { visibility: hidden; }
+html, body, [class*="css"] {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+}
+.background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+}
+.background-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+.stButton>button {
+    position: fixed;
+    bottom: 50%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    z-index: 1000;
+    font-size: 28px;
+    padding: 15px 30px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.stButton>button:hover {
+    background-color: #0056b3;
+    transform: translate(-50%, 50%) scale(1.05);
+}
+</style>
 """
-st.markdown(hide_st_style, unsafe_allow_html=True)
-
-# صورة الخلفية المعدلة لضمان ظهور النص كاملًا
-background_url = "https://i.imgur.com/bam6oj8.png"
+st.markdown(custom_css, unsafe_allow_html=True)
 
 # بيانات الألغام
 locations = [
@@ -290,40 +293,24 @@ locations = [
     {"name": "Mine 4", "x": 72, "y": 50},
 ]
 
-# HTML للخريطة مع ضبط الخلفية
+# HTML للخريطة مع المسار
 def create_map():
-    html_code = f"""
-    <div style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-image: url('{background_url}');
-        background-size: contain;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-color: #000;
-    ">
-        <!-- خريطة SVG -->
+    html_code = """
+    <div class="background-container">
+        <img src="https://i.imgur.com/bam6oj8.png" class="background-image">
         <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
     """
-
-    # إضافة خطوط بين النقاط
-    for i in range(len(locations) - 1):
-        x1 = locations[i]['x']
-        y1 = locations[i]['y']
-        x2 = locations[i+1]['x']
-        y2 = locations[i+1]['y']
+    
+    for i in range(len(locations)-1):
         html_code += f"""
-        <line x1="{x1}%" y1="{y1}%" x2="{x2}%" y2="{y2}%" 
+        <line x1="{locations[i]['x']}%" y1="{locations[i]['y']}%" 
+              x2="{locations[i+1]['x']}%" y2="{locations[i+1]['y']}%"
               stroke="aqua" stroke-width="4" stroke-dasharray="8,6"
               style="filter: drop-shadow(2px 2px 4px #000);" />
         """
-
+    
     html_code += "</svg>"
-
-    # إضافة علامات اللغم
+    
     for loc in locations:
         html_code += f"""
         <div title="{loc['name']}" style="
@@ -336,39 +323,27 @@ def create_map():
             filter: drop-shadow(2px 2px 6px black);
         ">📍</div>
         """
-
+    
     html_code += "</div>"
     return html_code
 
-# زر المغامرة
+# التحكم في حالة العرض
 if 'show_map' not in st.session_state:
     st.session_state.show_map = False
 
 if not st.session_state.show_map:
-    st.button("🚀 START ADVENTURE", key="adventure_button", on_click=lambda: st.session_state.update(show_map=True))
-
-if st.session_state.show_map:
-    # عرض الخريطة مع المسار والعلامات
-    components.html(create_map(), height=800, scrolling=False)
+    # عرض الخلفية فقط مع الزر
+    components.html("""
+    <div class="background-container">
+        <img src="https://i.imgur.com/bam6oj8.png" class="background-image">
+    </div>
+    """, height=800)
+    st.button("🚀 START ADVENTURE", on_click=lambda: st.session_state.update(show_map=True))
 else:
-    # عرض الخريطة بدون المسار والعلامات مع ضبط الخلفية
-    components.html(f"""
-    <div style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-image: url('{background_url}');
-        background-size: contain;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-color: #000;
-    "></div>
-    """, height=800, scrolling=False)
+    # عرض الخريطة كاملة مع المسار
+    components.html(create_map(), height=800)
 
 
 
 
-
-
+    
