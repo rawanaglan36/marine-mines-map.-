@@ -97,88 +97,131 @@
 #     st.success("✨ بالتوفيق في رحلتك نحو أعماق البحر! 🌊")
 
 
+#---------------------------------------------------------------------------
+
+# import streamlit as st
+# from PIL import Image
+# import base64
+# import time
+
+# st.set_page_config(layout="wide")
+
+# # إعداد الصورة الخلفية مع تغطية كاملة
+# page_bg_img = f'''
+#     <style>
+#     .stApp {{
+#         background-image: url("data:image/png;base64,{base64.b64encode(open("https://i.imgur.com/bam6oj8.png", "rb").read()).decode()}" );
+#         background-size: cover;
+#         background-position: center;
+#         background-repeat: no-repeat;
+#     }}
+#     .title-text {{
+#         position: absolute;
+#         top: 30px;
+#         left: 50%;
+#         transform: translateX(-50%);
+#         color: white;
+#         font-size: 42px;
+#         font-weight: bold;
+#         text-align: center;
+#         z-index: 10;
+#         text-shadow: 2px 2px 5px #000;
+#     }}
+#     .fade-in {{
+#         animation: fadeIn 2s ease-in forwards;
+#         opacity: 0;
+#     }}
+#     @keyframes fadeIn {{
+#         from {{ opacity: 0; }}
+#         to {{ opacity: 1; }}
+#     }}
+#     .bottom-button {{
+#         position: fixed;
+#         bottom: 30px;
+#         left: 50%;
+#         transform: translateX(-50%);
+#         z-index: 20;
+#         text-align: center;
+#     }}
+#     .bottom-button button {{
+#         font-size: 20px;
+#         padding: 10px 24px;
+#         background-color: #007BFF;
+#         color: white;
+#         border: none;
+#         border-radius: 8px;
+#         box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+#         cursor: pointer;
+#     }}
+#     .bottom-button button:hover {{
+#         background-color: #0056b3;
+#     }}
+#     </style>
+# '''
+# st.markdown(page_bg_img, unsafe_allow_html=True)
+
+# # العنوان الرئيسي فقط
+# st.markdown('<div class="title-text">MARINE MINES MAP</div>', unsafe_allow_html=True)
+
+# # زر إظهار المسار
+# button_html = """
+# <div class="bottom-button">
+#     <form action="" method="post">
+#         <button type="submit">🚀 Start Adventure</button>
+#     </form>
+# </div>
+# """
+
+# show_path = st.button("🚀 Start Adventure")
+# st.markdown(button_html, unsafe_allow_html=True)
+
+# # عرض المسار فقط عند الضغط على الزر، مع تأثير تدريجي
+# if show_path:
+#     with st.container():
+#         time.sleep(0.3)
+#         st.markdown("<div class='fade-in'>", unsafe_allow_html=True)
+#         st.image("/mnt/data/with_path_and_pins.png", use_column_width=True)
+#         st.markdown("</div>", unsafe_allow_html=True)
+# else:
+#     st.image("/mnt/data/map_cleaned.png", use_column_width=True)
+#---------------------------------------------------------------------
+
 import streamlit as st
 from PIL import Image
 import base64
 import time
+import requests  # أضيفي هذه المكتبة
 
 st.set_page_config(layout="wide")
 
-# إعداد الصورة الخلفية مع تغطية كاملة
+# دالة لتحميل الصورة كـ base64
+def get_image_as_base64(url):
+    response = requests.get(url)
+    return base64.b64encode(response.content).decode()
+
+# إعداد الصورة الخلفية
 page_bg_img = f'''
     <style>
     .stApp {{
-        background-image: url("data:image/png;base64,{base64.b64encode(open("https://i.imgur.com/bam6oj8.png", "rb").read()).decode()}" );
+        background-image: url("data:image/png;base64,{get_image_as_base64('https://i.imgur.com/bam6oj8.png')}");
         background-size: cover;
         background-position: center;
-        background-repeat: no-repeat;
     }}
     .title-text {{
-        position: absolute;
-        top: 30px;
-        left: 50%;
-        transform: translateX(-50%);
         color: white;
         font-size: 42px;
-        font-weight: bold;
         text-align: center;
-        z-index: 10;
         text-shadow: 2px 2px 5px #000;
-    }}
-    .fade-in {{
-        animation: fadeIn 2s ease-in forwards;
-        opacity: 0;
-    }}
-    @keyframes fadeIn {{
-        from {{ opacity: 0; }}
-        to {{ opacity: 1; }}
-    }}
-    .bottom-button {{
-        position: fixed;
-        bottom: 30px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 20;
-        text-align: center;
-    }}
-    .bottom-button button {{
-        font-size: 20px;
-        padding: 10px 24px;
-        background-color: #007BFF;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
-        cursor: pointer;
-    }}
-    .bottom-button button:hover {{
-        background-color: #0056b3;
     }}
     </style>
 '''
 st.markdown(page_bg_img, unsafe_allow_html=True)
 
-# العنوان الرئيسي فقط
+# العنوان الرئيسي
 st.markdown('<div class="title-text">MARINE MINES MAP</div>', unsafe_allow_html=True)
 
-# زر إظهار المسار
-button_html = """
-<div class="bottom-button">
-    <form action="" method="post">
-        <button type="submit">🚀 Start Adventure</button>
-    </form>
-</div>
-"""
-
-show_path = st.button("🚀 Start Adventure")
-st.markdown(button_html, unsafe_allow_html=True)
-
-# عرض المسار فقط عند الضغط على الزر، مع تأثير تدريجي
-if show_path:
-    with st.container():
-        time.sleep(0.3)
-        st.markdown("<div class='fade-in'>", unsafe_allow_html=True)
-        st.image("/mnt/data/with_path_and_pins.png", use_column_width=True)
-        st.markdown("</div>", unsafe_allow_html=True)
+# زر الإجراء
+if st.button("🚀 Start Adventure"):
+    st.image("with_path_and_pins.png", use_column_width=True)  # تأكدي من المسار
 else:
-    st.image("/mnt/data/map_cleaned.png", use_column_width=True)
+    st.image("map_cleaned.png", use_column_width=True)  # تأكدي من المسار
