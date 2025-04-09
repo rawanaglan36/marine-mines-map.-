@@ -258,8 +258,8 @@ html, body, [class*="css"] {
     background-color: #000;
 }
 .background-image {
-    width: 100%;
-    height: 100%;
+    width: 150%;
+    height: 150%;
     object-fit: contain;
 }
 .stButton>button {
