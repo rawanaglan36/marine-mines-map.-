@@ -15,7 +15,7 @@ hide_st_style = """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
 # صورة الخلفية
-background_url = "blob:https://imgur.com/10b9d4ed-c807-4dbc-991c-64712a5928a2"
+background_url = "https://imgur.com/bam6oj8"
 
 # بيانات الألغام
 locations = [
