@@ -233,9 +233,9 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 # إعداد الصفحة
-st.set_page_config(page_title="خريطة الألغام البحرية", layout="wide")
+st.set_page_config(page_title="Marine Mines Map", layout="wide")
 
-# إخفاء عناصر Streamlit الافتراضية
+# إخفاء عناصر Streamlit الافتراضية وتخصيص الزر
 hide_st_style = """
     <style>
     #MainMenu {visibility: hidden;}
@@ -247,17 +247,24 @@ hide_st_style = """
         left: 50%;
         transform: translate(-50%, 50%);
         z-index: 1000;
-        font-size: 20px;
-        padding: 10px 24px;
+        font-size: 28px;
+        padding: 15px 30px;
         background-color: #007BFF;
         color: white;
         border: none;
-        border-radius: 8px;
-        box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+        border-radius: 10px;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
         cursor: pointer;
+        transition: all 0.3s ease;
     }
     .stButton>button:hover {
         background-color: #0056b3;
+        transform: translate(-50%, 50%) scale(1.05);
+    }
+    html, body, [class*="css"]  {
+        height: 100%;
+        margin: 0;
+        padding: 0;
     }
     </style>
 """
@@ -268,43 +275,26 @@ background_url = "https://i.imgur.com/bam6oj8.png"
 
 # بيانات الألغام
 locations = [
-    {"name": "لغم 1", "x": 23, "y": 45},
-    {"name": "لغم 2", "x": 38, "y": 60},
-    {"name": "لغم 3", "x": 58, "y": 65},
-    {"name": "لغم 4", "x": 72, "y": 50},
+    {"name": "Mine 1", "x": 23, "y": 45},
+    {"name": "Mine 2", "x": 38, "y": 60},
+    {"name": "Mine 3", "x": 58, "y": 65},
+    {"name": "Mine 4", "x": 72, "y": 50},
 ]
 
 # HTML للخريطة
 def create_map():
     html_code = f"""
     <div style="
-        position: relative;
+        position: fixed;
+        top: 0;
+        left: 0;
         width: 100vw;
         height: 100vh;
         background-image: url('{background_url}');
         background-size: cover;
         background-position: center;
-        overflow: hidden;
+        background-repeat: no-repeat;
     ">
-
-        <!-- عنوان -->
-        <div style="
-            text-align: center;
-            color: white;
-            padding-top: 30px;
-            font-size: 38px;
-            font-weight: bold;
-            text-shadow: 2px 2px 8px #000;
-        ">🌊 خريطة الألغام البحرية</div>
-
-        <div style="
-            text-align: center;
-            color: white;
-            margin-top: 5px;
-            font-size: 20px;
-            text-shadow: 1px 1px 4px #000;
-        ">علامات تشير إلى أماكن الألغام في رحلة أعماق البحر</div>
-
         <!-- خريطة SVG -->
         <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
     """
@@ -317,8 +307,8 @@ def create_map():
         y2 = locations[i+1]['y']
         html_code += f"""
         <line x1="{x1}%" y1="{y1}%" x2="{x2}%" y2="{y2}%" 
-              stroke="aqua" stroke-width="3" stroke-dasharray="8,6"
-              style="filter: drop-shadow(2px 2px 2px #000);" />
+              stroke="aqua" stroke-width="4" stroke-dasharray="8,6"
+              style="filter: drop-shadow(2px 2px 4px #000);" />
         """
 
     html_code += "</svg>"
@@ -331,9 +321,9 @@ def create_map():
             left: {loc['x']}%;
             top: {loc['y']}%;
             transform: translate(-50%, -100%);
-            font-size: 45px;
+            font-size: 50px;
             color: deeppink;
-            filter: drop-shadow(2px 2px 4px black);
+            filter: drop-shadow(2px 2px 6px black);
         ">📍</div>
         """
 
@@ -341,50 +331,27 @@ def create_map():
     return html_code
 
 # زر المغامرة
-show_map = st.button("🚀 ابدأ المغامرة")
+show_map = st.button("🚀 START ADVENTURE")
 
 if show_map:
     # عرض الخريطة مع المسار والعلامات
-    components.html(create_map(), height=800)
-    st.success("✨ بالتوفيق في رحلتك نحو أعماق البحر! 🌊")
+    components.html(create_map(), height=800, scrolling=False)
 else:
     # عرض الخريطة بدون المسار والعلامات
     components.html(f"""
     <div style="
-        position: relative;
+        position: fixed;
+        top: 0;
+        left: 0;
         width: 100vw;
         height: 100vh;
         background-image: url('{background_url}');
         background-size: cover;
         background-position: center;
-        overflow: hidden;
-    ">
-        <div style="
-            text-align: center;
-            color: white;
-            padding-top: 30px;
-            font-size: 38px;
-            font-weight: bold;
-            text-shadow: 2px 2px 8px #000;
-        ">🌊 خريطة الألغام البحرية</div>
-        
-        <div style="
-            text-align: center;
-            color: white;
-            margin-top: 5px;
-            font-size: 20px;
-            text-shadow: 1px 1px 4px #000;
-        ">اضغط على الزر لبدء المغامرة</div>
-    </div>
-    """, height=800)
+        background-repeat: no-repeat;
+    "></div>
+    """, height=800, scrolling=False)
 
 
 
-
-
-
-
-
-
-
-
+    
