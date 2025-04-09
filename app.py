@@ -233,52 +233,66 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 # إعداد الصفحة بدون هوامش
-st.set_page_config(page_title="Marine Mines Map", layout="wide")
+st.set_page_config(page_title="Marine Mines Map", layout="wide", initial_sidebar_state="collapsed")
 
-# CSS مخصص لإزالة جميع الهوامش
+# CSS مخصص لإزالة جميع الهوامش والتحكم الكامل في التخطيط
 custom_css = """
 <style>
-#MainMenu, footer, header { visibility: hidden; }
-html, body, [class*="css"] {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
+#MainMenu, footer, header { display: none; }
+.stApp {
+    padding: 0 !important;
+    margin: 0 !important;
     overflow: hidden;
 }
-.background-container {
+.fullscreen {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
+    width: 100vw;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #000;
 }
-.background-image {
-    width: 150%;
-    height: 150%;
+.map-image {
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
 }
-.stButton>button {
+.adventure-button {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1000;
-    font-size: 28px;
-    padding: 15px 30px;
-    background-color: #007BFF;
+    font-size: 2rem;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #0061ff, #60efff);
     color: white;
     border: none;
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+    border-radius: 50px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
     cursor: pointer;
+    transition: all 0.3s ease;
 }
-.stButton>button:hover {
-    background-color: #0056b3;
+.adventure-button:hover {
+    transform: translate(-50%, -50%) scale(1.05);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+}
+.marker {
+    position: absolute;
+    font-size: 2.5rem;
+    color: #ff2e63;
+    filter: drop-shadow(0 0 8px rgba(0,0,0,0.7));
+    z-index: 500;
+}
+.path {
+    position: absolute;
+    height: 4px;
+    background: linear-gradient(90deg, #00f260, #0575e6);
+    box-shadow: 0 0 10px rgba(0,210,255,0.7);
+    z-index: 400;
 }
 </style>
 """
@@ -292,55 +306,58 @@ locations = [
     {"name": "Mine 4", "x": 72, "y": 50},
 ]
 
-# HTML للخريطة مع المسار
-def create_map():
-    html_code = """
-    <div class="background-container">
-        <img src="https://i.imgur.com/bam6oj8.png" class="background-image">
-        <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
+# إنشاء الخريطة التفاعلية
+def create_interactive_map():
+    html = f"""
+    <div class="fullscreen">
+        <img src="https://i.imgur.com/bam6oj8.png" class="map-image">
     """
     
+    # إضافة المسار
     for i in range(len(locations)-1):
-        html_code += f"""
-        <line x1="{locations[i]['x']}%" y1="{locations[i]['y']}%" 
-              x2="{locations[i+1]['x']}%" y2="{locations[i+1]['y']}%"
-              stroke="aqua" stroke-width="4" stroke-dasharray="8,6"
-              style="filter: drop-shadow(2px 2px 4px #000);" />
+        start = locations[i]
+        end = locations[i+1]
+        html += f"""
+        <div class="path" style="
+            left: {start['x']}%;
+            top: {start['y']}%;
+            width: calc({end['x'] - start['x']}% + 20px);
+            transform: rotate({45 if i%2 else -45}deg);
+        "></div>
         """
     
-    html_code += "</svg>"
-    
+    # إضافة العلامات
     for loc in locations:
-        html_code += f"""
-        <div title="{loc['name']}" style="
-            position: absolute;
-            left: {loc['x']}%;
-            top: {loc['y']}%;
-            transform: translate(-50%, -100%);
-            font-size: 50px;
-            color: deeppink;
-            filter: drop-shadow(2px 2px 6px black);
-        ">📍</div>
+        html += f"""
+        <div class="marker" style="left: {loc['x']}%; top: {loc['y']}%">📍</div>
         """
     
-    html_code += "</div>"
-    return html_code
+    html += "</div>"
+    return html
 
 # التحكم في حالة العرض
-if 'show_map' not in st.session_state:
+if "show_map" not in st.session_state:
     st.session_state.show_map = False
 
-if not st.session_state.show_map:
-    # عرض الخلفية فقط مع الزر
-    components.html("""
-    <div class="background-container">
-        <img src="https://i.imgur.com/bam6oj8.png" class="background-image">
+if st.session_state.show_map:
+    components.html(create_interactive_map(), height=800)
+else:
+    components.html(f"""
+    <div class="fullscreen">
+        <img src="https://i.imgur.com/bam6oj8.png" class="map-image">
     </div>
     """, height=800)
-    st.button("🚀 START ADVENTURE", on_click=lambda: st.session_state.update(show_map=True))
-else:
-    # عرض الخريطة كاملة مع المسار
-    components.html(create_map(), height=800)
+    st.button("🚀 START ADVENTURE", key="start_btn", on_click=lambda: st.session_state.update(show_map=True))
+
+# إضافة JavaScript لإعادة الحجم عند تغيير حجم النافذة
+components.html("""
+<script>
+window.addEventListener('resize', function() {
+    window.parent.document.querySelector('iframe').style.height = window.innerHeight + 'px';
+});
+</script>
+""")
+
 
 
 
