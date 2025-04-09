@@ -265,6 +265,15 @@ hide_st_style = """
         height: 100%;
         margin: 0;
         padding: 0;
+        overflow: hidden;
+    }
+    iframe {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
     }
     </style>
 """
@@ -331,9 +340,13 @@ def create_map():
     return html_code
 
 # زر المغامرة
-show_map = st.button("🚀 START ADVENTURE")
+if 'show_map' not in st.session_state:
+    st.session_state.show_map = False
 
-if show_map:
+if not st.session_state.show_map:
+    st.button("🚀 START ADVENTURE", key="adventure_button", on_click=lambda: st.session_state.update(show_map=True))
+
+if st.session_state.show_map:
     # عرض الخريطة مع المسار والعلامات
     components.html(create_map(), height=800, scrolling=False)
 else:
@@ -351,6 +364,10 @@ else:
         background-repeat: no-repeat;
     "></div>
     """, height=800, scrolling=False)
+
+
+
+
 
 
 
