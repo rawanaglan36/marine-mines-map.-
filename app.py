@@ -279,7 +279,7 @@ hide_st_style = """
 """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# صورة الخلفية
+# صورة الخلفية المعدلة لضمان ظهور النص كاملًا
 background_url = "https://i.imgur.com/bam6oj8.png"
 
 # بيانات الألغام
@@ -290,7 +290,7 @@ locations = [
     {"name": "Mine 4", "x": 72, "y": 50},
 ]
 
-# HTML للخريطة
+# HTML للخريطة مع ضبط الخلفية
 def create_map():
     html_code = f"""
     <div style="
@@ -300,9 +300,10 @@ def create_map():
         width: 100vw;
         height: 100vh;
         background-image: url('{background_url}');
-        background-size: cover;
+        background-size: contain;
         background-position: center;
         background-repeat: no-repeat;
+        background-color: #000;
     ">
         <!-- خريطة SVG -->
         <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
@@ -350,7 +351,7 @@ if st.session_state.show_map:
     # عرض الخريطة مع المسار والعلامات
     components.html(create_map(), height=800, scrolling=False)
 else:
-    # عرض الخريطة بدون المسار والعلامات
+    # عرض الخريطة بدون المسار والعلامات مع ضبط الخلفية
     components.html(f"""
     <div style="
         position: fixed;
@@ -359,9 +360,10 @@ else:
         width: 100vw;
         height: 100vh;
         background-image: url('{background_url}');
-        background-size: cover;
+        background-size: contain;
         background-position: center;
         background-repeat: no-repeat;
+        background-color: #000;
     "></div>
     """, height=800, scrolling=False)
 
@@ -370,5 +372,3 @@ else:
 
 
 
-
-    
