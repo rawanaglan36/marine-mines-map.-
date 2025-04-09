@@ -108,7 +108,7 @@ st.set_page_config(layout="wide")
 page_bg_img = f'''
     <style>
     .stApp {{
-        background-image: url("data:image/png;base64,{base64.b64encode(open("map_cleaned.png", "rb").read()).decode()}" );
+        background-image: url("data:image/png;base64,{base64.b64encode(open("https://i.imgur.com/bam6oj8.png", "rb").read()).decode()}" );
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
