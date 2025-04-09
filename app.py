@@ -228,6 +228,7 @@
 
 #------------------------------------------------------------------------------
 
+
 import streamlit as st
 import streamlit.components.v1 as components
 
@@ -256,12 +257,6 @@ custom_css = """
 .stButton>button:hover {
     background-color: #0056b3;
 }
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: hidden;
-}
 .map-container {
     position: fixed;
     top: 0;
@@ -269,27 +264,53 @@ html, body {
     width: 100%;
     height: 100%;
 }
-.tooltip {
-    position: absolute;
-    background: rgba(0,0,0,0.85);
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    font-family: Arial;
-    font-size: 14px;
-    max-width: 250px;
-    z-index: 100;
-    display: none;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-}
-.marker:hover .tooltip {
-    display: block;
-}
 .marker {
     position: absolute;
     font-size: 30px;
     cursor: pointer;
     z-index: 50;
+    transition: all 0.2s;
+}
+.marker:hover {
+    transform: scale(1.2);
+}
+.tooltip-box {
+    position: absolute;
+    background: rgba(0,0,0,0.9);
+    color: white;
+    padding: 12px;
+    border-radius: 6px;
+    font-family: Arial;
+    font-size: 14px;
+    width: 220px;
+    z-index: 100;
+    box-shadow: 0 0 15px rgba(0,0,0,0.7);
+    display: none;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 100%;
+    margin-bottom: 10px;
+}
+.marker:hover .tooltip-box {
+    display: block;
+}
+.tooltip-title {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #4fc3f7;
+}
+.tooltip-row {
+    display: flex;
+    margin-bottom: 5px;
+}
+.tooltip-label {
+    width: 80px;
+    font-weight: bold;
+    color: #81c784;
+}
+.tooltip-value {
+    flex: 1;
 }
 </style>
 """
@@ -298,7 +319,7 @@ st.markdown(custom_css, unsafe_allow_html=True)
 # بيانات الألغام المعدلة
 locations = [
     {
-        "id": "Mine1",
+        "id": "mine1",
         "x": 23,
         "y": 45,
         "name": "Mine 1",
@@ -309,7 +330,7 @@ locations = [
         "status": "غير مفعّل"
     },
     {
-        "id": "Mine2",
+        "id": "mine2",
         "x": 38,
         "y": 60,
         "name": "Mine 2",
@@ -328,21 +349,32 @@ def create_map():
         <img src="https://i.imgur.com/bam6oj8.png" style="width:100%;height:100%;object-fit:cover;">
     """
 
-    # إضافة العلامات
     for loc in locations:
         html += f"""
-        <div class="marker" id="{loc['id']}" 
-             style="left:{loc['x']}%;top:{loc['y']}%">
+        <div class="marker" style="left:{loc['x']}%;top:{loc['y']}%">
             📍
-            <div class="tooltip">
-                <div style="font-weight:bold;margin-bottom:5px;">{loc['name']}</div>
-                <div style="border-bottom:1px solid #444;padding-bottom:5px;margin-bottom:5px;">
-                    الموقع: {loc['location']}
+            <div class="tooltip-box">
+                <div class="tooltip-title">{loc['name']}</div>
+                <div class="tooltip-row">
+                    <div class="tooltip-label">الموقع:</div>
+                    <div class="tooltip-value">{loc['location']}</div>
                 </div>
-                <div>السنة: {loc['year']}</div>
-                <div>النوع: {loc['type']}</div>
-                <div>العمق: {loc['depth']}</div>
-                <div>الحالة: {loc['status']}</div>
+                <div class="tooltip-row">
+                    <div class="tooltip-label">السنة:</div>
+                    <div class="tooltip-value">{loc['year']}</div>
+                </div>
+                <div class="tooltip-row">
+                    <div class="tooltip-label">النوع:</div>
+                    <div class="tooltip-value">{loc['type']}</div>
+                </div>
+                <div class="tooltip-row">
+                    <div class="tooltip-label">العمق:</div>
+                    <div class="tooltip-value">{loc['depth']}</div>
+                </div>
+                <div class="tooltip-row">
+                    <div class="tooltip-label">الحالة:</div>
+                    <div class="tooltip-value">{loc['status']}</div>
+                </div>
             </div>
         </div>
         """
@@ -364,3 +396,6 @@ if not st.session_state.show_map:
 else:
     components.html(create_map(), height=800)
 
+
+
+    
