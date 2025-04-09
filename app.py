@@ -228,7 +228,6 @@
 
 #------------------------------------------------------------------------------
 
-
 import streamlit as st
 import streamlit.components.v1 as components
 
@@ -275,6 +274,23 @@ hide_st_style = """
         height: 100%;
         border: none;
     }
+    .tooltip {
+        position: absolute;
+        background-color: rgba(0,0,0,0.8);
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        max-width: 200px;
+        z-index: 100;
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    .marker:hover .tooltip {
+        visibility: visible;
+        opacity: 1;
+    }
     </style>
 """
 st.markdown(hide_st_style, unsafe_allow_html=True)
@@ -282,12 +298,48 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 # صورة الخلفية
 background_url = "https://i.imgur.com/bam6oj8.png"
 
-# بيانات الألغام
+# بيانات الألغام مع معلومات إضافية
 locations = [
-    {"name": "Mine 1", "x": 23, "y": 45},
-    {"name": "Mine 2", "x": 38, "y": 60},
-    {"name": "Mine 3", "x": 58, "y": 65},
-    {"name": "Mine 4", "x": 72, "y": 50},
+    {
+        "name": "Mine 1",
+        "x": 23,
+        "y": 45,
+        "location": "مكتبة الإسكندرية",
+        "year": 1950,
+        "type": "لغم بحري ألماني",
+        "depth": "15 متر",
+        "status": "غير مفعّل"
+    },
+    {
+        "name": "Mine 2",
+        "x": 38,
+        "y": 60,
+        "location": "خليج أبو قير",
+        "year": 1942,
+        "type": "لغم بريطاني",
+        "depth": "22 متر",
+        "status": "تم تحييده"
+    },
+    {
+        "name": "Mine 3",
+        "x": 58,
+        "y": 65,
+        "location": "قرب شواطئ مرسي مطروح",
+        "year": 1943,
+        "type": "لغم إيطالي",
+        "depth": "30 متر",
+        "status": "خطير"
+    },
+    {
+        "name": "Mine 4",
+        "x": 72,
+        "y": 50,
+        "location": "مدخل قناة السويس",
+        "year": 1967,
+        "type": "لغم حديث",
+        "depth": "10 متر",
+        "status": "غير مفعّل"
+    },
 ]
 
 # HTML للخريطة
@@ -322,10 +374,10 @@ def create_map():
 
     html_code += "</svg>"
 
-    # إضافة علامات اللغم
+    # إضافة علامات اللغم مع معلومات تفصيلية
     for loc in locations:
         html_code += f"""
-        <div title="{loc['name']}" style="
+        <div class="marker" style="
             position: absolute;
             left: {loc['x']}%;
             top: {loc['y']}%;
@@ -333,7 +385,18 @@ def create_map():
             font-size: 50px;
             color: deeppink;
             filter: drop-shadow(2px 2px 6px black);
-        ">📍</div>
+            cursor: pointer;
+        ">
+            📍
+            <div class="tooltip">
+                <strong>{loc['name']}</strong><br>
+                الموقع: {loc['location']}<br>
+                السنة: {loc['year']}<br>
+                النوع: {loc['type']}<br>
+                العمق: {loc['depth']}<br>
+                الحالة: {loc['status']}
+            </div>
+        </div>
         """
 
     html_code += "</div>"
