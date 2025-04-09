@@ -234,199 +234,133 @@ import streamlit.components.v1 as components
 # إعداد الصفحة
 st.set_page_config(page_title="Marine Mines Map", layout="wide")
 
-# إخفاء عناصر Streamlit الافتراضية وتخصيص الزر
-hide_st_style = """
-    <style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    .stButton>button {
-        position: fixed;
-        bottom: 50%;
-        left: 50%;
-        transform: translate(-50%, 50%);
-        z-index: 1000;
-        font-size: 28px;
-        padding: 15px 30px;
-        background-color: #007BFF;
-        color: white;
-        border: none;
-        border-radius: 10px;
-        box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    .stButton>button:hover {
-        background-color: #0056b3;
-        transform: translate(-50%, 50%) scale(1.05);
-    }
-    html, body, [class*="css"]  {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-    }
-    iframe {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        border: none;
-    }
-    .tooltip {
-        position: absolute;
-        background-color: rgba(0,0,0,0.8);
-        color: white;
-        padding: 10px;
-        border-radius: 5px;
-        font-size: 14px;
-        max-width: 200px;
-        z-index: 100;
-        visibility: hidden;
-        opacity: 0;
-        transition: opacity 0.3s;
-    }
-    .marker:hover .tooltip {
-        visibility: visible;
-        opacity: 1;
-    }
-    </style>
+# CSS مخصص
+custom_css = """
+<style>
+#MainMenu, footer, header { visibility: hidden; }
+.stButton>button {
+    position: fixed;
+    bottom: 50%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    z-index: 1000;
+    font-size: 28px;
+    padding: 15px 30px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+    cursor: pointer;
+}
+.stButton>button:hover {
+    background-color: #0056b3;
+}
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+}
+.map-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.tooltip {
+    position: absolute;
+    background: rgba(0,0,0,0.85);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: Arial;
+    font-size: 14px;
+    max-width: 250px;
+    z-index: 100;
+    display: none;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+.marker:hover .tooltip {
+    display: block;
+}
+.marker {
+    position: absolute;
+    font-size: 30px;
+    cursor: pointer;
+    z-index: 50;
+}
+</style>
 """
-st.markdown(hide_st_style, unsafe_allow_html=True)
+st.markdown(custom_css, unsafe_allow_html=True)
 
-# صورة الخلفية
-background_url = "https://i.imgur.com/bam6oj8.png"
-
-# بيانات الألغام مع معلومات إضافية
+# بيانات الألغام المعدلة
 locations = [
     {
-        "name": "Mine 1",
+        "id": "Mine1",
         "x": 23,
         "y": 45,
+        "name": "Mine 1",
         "location": "مكتبة الإسكندرية",
-        "year": 1950,
+        "year": "1950",
         "type": "لغم بحري ألماني",
         "depth": "15 متر",
         "status": "غير مفعّل"
     },
     {
-        "name": "Mine 2",
+        "id": "Mine2",
         "x": 38,
         "y": 60,
+        "name": "Mine 2",
         "location": "خليج أبو قير",
-        "year": 1942,
+        "year": "1942",
         "type": "لغم بريطاني",
         "depth": "22 متر",
         "status": "تم تحييده"
-    },
-    {
-        "name": "Mine 3",
-        "x": 58,
-        "y": 65,
-        "location": "قرب شواطئ مرسي مطروح",
-        "year": 1943,
-        "type": "لغم إيطالي",
-        "depth": "30 متر",
-        "status": "خطير"
-    },
-    {
-        "name": "Mine 4",
-        "x": 72,
-        "y": 50,
-        "location": "مدخل قناة السويس",
-        "year": 1967,
-        "type": "لغم حديث",
-        "depth": "10 متر",
-        "status": "غير مفعّل"
-    },
+    }
 ]
 
-# HTML للخريطة
+# دالة لإنشاء الخريطة
 def create_map():
-    html_code = f"""
-    <div style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-image: url('{background_url}');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-    ">
-        <!-- خريطة SVG -->
-        <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
+    html = f"""
+    <div class="map-container">
+        <img src="https://i.imgur.com/bam6oj8.png" style="width:100%;height:100%;object-fit:cover;">
     """
 
-    # إضافة خطوط بين النقاط
-    for i in range(len(locations) - 1):
-        x1 = locations[i]['x']
-        y1 = locations[i]['y']
-        x2 = locations[i+1]['x']
-        y2 = locations[i+1]['y']
-        html_code += f"""
-        <line x1="{x1}%" y1="{y1}%" x2="{x2}%" y2="{y2}%" 
-              stroke="aqua" stroke-width="4" stroke-dasharray="8,6"
-              style="filter: drop-shadow(2px 2px 4px #000);" />
-        """
-
-    html_code += "</svg>"
-
-    # إضافة علامات اللغم مع معلومات تفصيلية
+    # إضافة العلامات
     for loc in locations:
-        html_code += f"""
-        <div class="marker" style="
-            position: absolute;
-            left: {loc['x']}%;
-            top: {loc['y']}%;
-            transform: translate(-50%, -100%);
-            font-size: 50px;
-            color: deeppink;
-            filter: drop-shadow(2px 2px 6px black);
-            cursor: pointer;
-        ">
+        html += f"""
+        <div class="marker" id="{loc['id']}" 
+             style="left:{loc['x']}%;top:{loc['y']}%">
             📍
             <div class="tooltip">
-                <strong>{loc['name']}</strong><br>
-                الموقع: {loc['location']}<br>
-                السنة: {loc['year']}<br>
-                النوع: {loc['type']}<br>
-                العمق: {loc['depth']}<br>
-                الحالة: {loc['status']}
+                <div style="font-weight:bold;margin-bottom:5px;">{loc['name']}</div>
+                <div style="border-bottom:1px solid #444;padding-bottom:5px;margin-bottom:5px;">
+                    الموقع: {loc['location']}
+                </div>
+                <div>السنة: {loc['year']}</div>
+                <div>النوع: {loc['type']}</div>
+                <div>العمق: {loc['depth']}</div>
+                <div>الحالة: {loc['status']}</div>
             </div>
         </div>
         """
+    
+    html += "</div>"
+    return html
 
-    html_code += "</div>"
-    return html_code
-
-# زر المغامرة
+# التحكم في العرض
 if 'show_map' not in st.session_state:
     st.session_state.show_map = False
 
 if not st.session_state.show_map:
-    st.button("🚀 START ADVENTURE", key="adventure_button", on_click=lambda: st.session_state.update(show_map=True))
-
-if st.session_state.show_map:
-    # عرض الخريطة مع المسار والعلامات
-    components.html(create_map(), height=800, scrolling=False)
-else:
-    # عرض الخريطة بدون المسار والعلامات
+    st.button("🚀 START ADVENTURE", on_click=lambda: st.session_state.update(show_map=True))
     components.html(f"""
-    <div style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-image: url('{background_url}');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-    "></div>
-    """, height=800, scrolling=False)
+    <div class="map-container">
+        <img src="https://i.imgur.com/bam6oj8.png" style="width:100%;height:100%;object-fit:cover;">
+    </div>
+    """, height=800)
+else:
+    components.html(create_map(), height=800)
 
-
-    
