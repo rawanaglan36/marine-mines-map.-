@@ -232,16 +232,17 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-# إعداد الصفحة
+# إعداد الصفحة بدون هوامش
 st.set_page_config(page_title="Marine Mines Map", layout="wide")
 
-# CSS مخصص لضبط الخلفية والزر
+# CSS مخصص لإزالة جميع الهوامش
 custom_css = """
 <style>
 #MainMenu, footer, header { visibility: hidden; }
 html, body, [class*="css"] {
     margin: 0;
     padding: 0;
+    width: 100%;
     height: 100%;
     overflow: hidden;
 }
@@ -249,23 +250,23 @@ html, body, [class*="css"] {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #000;
 }
 .background-image {
-    max-width: 100%;
-    max-height: 100%;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
 }
 .stButton>button {
     position: fixed;
-    bottom: 50%;
+    top: 50%;
     left: 50%;
-    transform: translate(-50%, 50%);
+    transform: translate(-50%, -50%);
     z-index: 1000;
     font-size: 28px;
     padding: 15px 30px;
@@ -275,11 +276,9 @@ html, body, [class*="css"] {
     border-radius: 10px;
     box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
     cursor: pointer;
-    transition: all 0.3s ease;
 }
 .stButton>button:hover {
     background-color: #0056b3;
-    transform: translate(-50%, 50%) scale(1.05);
 }
 </style>
 """
@@ -345,5 +344,3 @@ else:
 
 
 
-
-    
