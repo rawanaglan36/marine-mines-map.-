@@ -229,52 +229,160 @@
 #------------------------------------------------------------------------------
 
 
+# import streamlit as st
+# import streamlit.components.v1 as components
+
+# # إعداد الصفحة
+# st.set_page_config(page_title="Marine Mines Map", layout="wide")
+
+# # إخفاء عناصر Streamlit الافتراضية وتخصيص الزر
+# hide_st_style = """
+#     <style>
+#     #MainMenu {visibility: hidden;}
+#     footer {visibility: hidden;}
+#     header {visibility: hidden;}
+#     .stButton>button {
+#         position: fixed;
+#         bottom: 50%;
+#         left: 50%;
+#         transform: translate(-50%, 50%);
+#         z-index: 1000;
+#         font-size: 28px;
+#         padding: 15px 30px;
+#         background-color: #007BFF;
+#         color: white;
+#         border: none;
+#         border-radius: 10px;
+#         box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+#         cursor: pointer;
+#         transition: all 0.3s ease;
+#     }
+#     .stButton>button:hover {
+#         background-color: #0056b3;
+#         transform: translate(-50%, 50%) scale(1.05);
+#     }
+#     html, body, [class*="css"]  {
+#         height: 100%;
+#         margin: 0;
+#         padding: 0;
+#         overflow: hidden;
+#     }
+#     iframe {
+#         position: fixed;
+#         top: 0;
+#         left: 0;
+#         width: 100%;
+#         height: 100%;
+#         border: none;
+#     }
+#     </style>
+# """
+# st.markdown(hide_st_style, unsafe_allow_html=True)
+
+# # صورة الخلفية
+# background_url = "https://i.imgur.com/bam6oj8.png"
+
+# # بيانات الألغام
+# locations = [
+#     {"name": "لغم مكتبة الاسكندرية - عام 1950", "x": 23, "y": 45},
+#     {"name": "لغم مكتبة الاسكندرية - عام 1950", "x": 38, "y": 60},
+#     {"name": "لغم المحيط الهادي - 1810", "x": 58, "y": 65},
+#     {"name": "لغم المحيط الهادي - 1810", "x": 72, "y": 50},
+# ]
+
+# # HTML للخريطة
+# def create_map():
+#     html_code = f"""
+#     <div style="
+#         position: fixed;
+#         top: 0;
+#         left: 0;
+#         width: 100vw;
+#         height: 100vh;
+#         background-image: url('{background_url}');
+#         background-size: cover;
+#         background-position: center;
+#         background-repeat: no-repeat;
+#     ">
+#         <!-- خريطة SVG -->
+#         <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
+#     """
+
+#     # إضافة خطوط بين النقاط
+#     for i in range(len(locations) - 1):
+#         x1 = locations[i]['x']
+#         y1 = locations[i]['y']
+#         x2 = locations[i+1]['x']
+#         y2 = locations[i+1]['y']
+#         html_code += f"""
+#         <line x1="{x1}%" y1="{y1}%" x2="{x2}%" y2="{y2}%" 
+#               stroke="aqua" stroke-width="4" stroke-dasharray="8,6"
+#               style="filter: drop-shadow(2px 2px 4px #000);" />
+#         """
+
+#     # إضافة علامات اللغم
+# # إضافة CSS لتأثير hover على علامات اللغم
+#   html_code += "</g></svg>"
+
+
+# # توليد علامات اللغم
+# for loc in locations:
+#     html_code += f"""
+#     <div title="{loc['name']}" class="mine-pin" style="
+#         position: absolute;
+#         left: {loc['x']}%;
+#         top: {loc['y']}%;
+#         font-size: 50px;
+#         color: deeppink;
+#         filter: drop-shadow(2px 2px 6px black);
+#         transform: translate(-50%, -100%);
+#     ">📍</div>
+#     """
+
+# html_code += "</div>"
+
+
+
+# # زر المغامرة
+# if 'show_map' not in st.session_state:
+#     st.session_state.show_map = False
+
+# if not st.session_state.show_map:
+#     st.button("🚀 START ADVENTURE", key="adventure_button", on_click=lambda: st.session_state.update(show_map=True))
+
+# if st.session_state.show_map:
+#     # عرض الخريطة مع المسار والعلامات
+#     components.html(create_map(), height=800, scrolling=False)
+# else:
+#     # عرض الخريطة بدون المسار والعلامات
+#     components.html(f"""
+#     <div style="
+#         position: fixed;
+#         top: 0;
+#         left: 0;
+#         width: 100vw;
+#         height: 100vh;
+#         background-image: url('{background_url}');
+#         background-size: cover;
+#         background-position: center;
+#         background-repeat: no-repeat;
+#     "></div>
+#     """, height=800, scrolling=False)
+
+#----------------------------------------------------------------
+
 import streamlit as st
 import streamlit.components.v1 as components
 
 # إعداد الصفحة
-st.set_page_config(page_title="Marine Mines Map", layout="wide")
+st.set_page_config(page_title="خريطة الألغام البحرية", layout="wide")
 
-# إخفاء عناصر Streamlit الافتراضية وتخصيص الزر
+# إخفاء عناصر Streamlit الافتراضية
 hide_st_style = """
     <style>
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
-    .stButton>button {
-        position: fixed;
-        bottom: 50%;
-        left: 50%;
-        transform: translate(-50%, 50%);
-        z-index: 1000;
-        font-size: 28px;
-        padding: 15px 30px;
-        background-color: #007BFF;
-        color: white;
-        border: none;
-        border-radius: 10px;
-        box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    .stButton>button:hover {
-        background-color: #0056b3;
-        transform: translate(-50%, 50%) scale(1.05);
-    }
-    html, body, [class*="css"]  {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-    }
-    iframe {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        border: none;
-    }
     </style>
 """
 st.markdown(hide_st_style, unsafe_allow_html=True)
@@ -284,31 +392,54 @@ background_url = "https://i.imgur.com/bam6oj8.png"
 
 # بيانات الألغام
 locations = [
-    {"name": "لغم مكتبة الاسكندرية - عام 1950", "x": 23, "y": 45},
-    {"name": "لغم مكتبة الاسكندرية - عام 1950", "x": 38, "y": 60},
-    {"name": "لغم المحيط الهادي - 1810", "x": 58, "y": 65},
-    {"name": "لغم المحيط الهادي - 1810", "x": 72, "y": 50},
+    {"name": "لغم 1", "x": 23, "y": 45},
+    {"name": "لغم 2", "x": 38, "y": 60},
+    {"name": "لغم 3", "x": 58, "y": 65},
+    {"name": "لغم 4", "x": 72, "y": 50},
 ]
 
-# HTML للخريطة
-def create_map():
-    html_code = f"""
-    <div style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-image: url('{background_url}');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-    ">
-        <!-- خريطة SVG -->
-        <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
-    """
+# زر المغامرة
+show_path = st.button("🚀 ابدأ المغامرة")
 
-    # إضافة خطوط بين النقاط
+# HTML الأساسي
+html_code = f"""
+<div style="
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('{background_url}');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+">
+
+    <!-- عنوان -->
+    <div style="
+        text-align: center;
+        color: white;
+        padding-top: 30px;
+        font-size: 38px;
+        font-weight: bold;
+        text-shadow: 2px 2px 8px #000;
+    ">🌊 خريطة الألغام البحرية</div>
+
+    <div style="
+        text-align: center;
+        color: white;
+        margin-top: 5px;
+        font-size: 20px;
+        text-shadow: 1px 1px 4px #000;
+    ">علامات تشير إلى أماكن الألغام في رحلة أعماق البحر</div>
+
+    <!-- SVG للمسار والعلامات -->
+    <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
+"""
+
+# إذا تم الضغط على الزر، أضف الخطوط والعلامات بتأثير تدريجي
+if show_path:
+    html_code += "<style> .fadein {{ animation: fadein 2s ease-in forwards; opacity: 0; }} @keyframes fadein {{ from {{opacity: 0;}} to {{opacity: 1;}} }} </style>"
+    html_code += "<g class='fadein'>"
+
     for i in range(len(locations) - 1):
         x1 = locations[i]['x']
         y1 = locations[i]['y']
@@ -316,67 +447,30 @@ def create_map():
         y2 = locations[i+1]['y']
         html_code += f"""
         <line x1="{x1}%" y1="{y1}%" x2="{x2}%" y2="{y2}%" 
-              stroke="aqua" stroke-width="4" stroke-dasharray="8,6"
-              style="filter: drop-shadow(2px 2px 4px #000);" />
+              stroke="aqua" stroke-width="3" stroke-dasharray="8,6"
+              style="filter: drop-shadow(2px 2px 2px #000);" />
         """
 
-    # إضافة علامات اللغم
-# إضافة CSS لتأثير hover على علامات اللغم
-style_block = """
-<style>
-    .mine-pin {
-        transition: transform 0.3s ease, font-size 0.3s ease;
-    }
-    .mine-pin:hover {
-        transform: translate(-50%, -100%) scale(1.3);
-    }
-</style>
-"""
+    html_code += "</g></svg>"
 
-html_code = style_block  # حطي CSS الأول هنا
+    # إضافة العلامات بعد SVG
+    for loc in locations:
+        html_code += f"""
+        <div title="{loc['name']}" class='fadein' style="
+            position: absolute;
+            left: {loc['x']}%;
+            top: {loc['y']}%;
+            transform: translate(-50%, -100%);
+            font-size: 45px;
+            color: deeppink;
+            filter: drop-shadow(2px 2px 4px black);
+        ">📍</div>
+        """
 
-# توليد علامات اللغم
-for loc in locations:
-    html_code += f"""
-    <div title="{loc['name']}" class="mine-pin" style="
-        position: absolute;
-        left: {loc['x']}%;
-        top: {loc['y']}%;
-        font-size: 50px;
-        color: deeppink;
-        filter: drop-shadow(2px 2px 6px black);
-        transform: translate(-50%, -100%);
-    ">📍</div>
-    """
+else:
+    html_code += "</svg>"
 
 html_code += "</div>"
 
+# عرض داخل Streamlit
 components.html(html_code, height=800)
-
-
-# زر المغامرة
-if 'show_map' not in st.session_state:
-    st.session_state.show_map = False
-
-if not st.session_state.show_map:
-    st.button("🚀 START ADVENTURE", key="adventure_button", on_click=lambda: st.session_state.update(show_map=True))
-
-if st.session_state.show_map:
-    # عرض الخريطة مع المسار والعلامات
-    components.html(create_map(), height=800, scrolling=False)
-else:
-    # عرض الخريطة بدون المسار والعلامات
-    components.html(f"""
-    <div style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-image: url('{background_url}');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-    "></div>
-    """, height=800, scrolling=False)
-
