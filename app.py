@@ -427,13 +427,13 @@ background_url = "https://i.imgur.com/bam6oj8.png"
 
 # locations of pins 
 locations = [
-    #{"name": " - لغم مكتبة الاسكندرية - عام 1750", "x": 23, "y": 45},
-   # {"name": "لغم الحيط الهادي - عام 1710", "x": 38, "y": 60},
+    {"name": " - لغم مكتبة الاسكندرية - عام 1750", "x": 23, "y": 45},
+    {"name": "لغم الحيط الهادي - عام 1710", "x": 38, "y": 60},
   {"name": "لغم البحر الاحمر - عام 1640", "x": 58, "y": 65},
-   # {"name": "لغم البحر الابيض المتوسط - عام 1620", "x": 72, "y": 50},
+    {"name": "لغم البحر الابيض المتوسط - عام 1620", "x": 72, "y": 50},
 ]
 
-# HTML للخريطة
+# HTML for map
 def create_map():
     html_code = f"""
     <div style="
@@ -451,7 +451,7 @@ def create_map():
         <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
     """
 
-    # إضافة خطوط بين النقاط
+    # adding lines between pins 
     for i in range(len(locations) - 1):
         x1 = locations[i]['x']
         y1 = locations[i]['y']
@@ -465,7 +465,7 @@ def create_map():
 
     html_code += "</svg>"
 
-    # إضافة علامات اللغم
+    # adding signs for pins 
     for loc in locations:
         html_code += f"""
         <div title="{loc['name']}" style="
@@ -482,7 +482,7 @@ def create_map():
     html_code += "</div>"
     return html_code
 
-# زر المغامرة
+# adventure button 
 if 'show_map' not in st.session_state:
     st.session_state.show_map = False
 
@@ -490,10 +490,10 @@ if not st.session_state.show_map:
     st.button("🚀 START ADVENTURE", key="adventure_button", on_click=lambda: st.session_state.update(show_map=True))
 
 if st.session_state.show_map:
-    # عرض الخريطة مع المسار والعلامات
+    # show map on signs and liens 
     components.html(create_map(), height=800, scrolling=False)
 else:
-    # عرض الخريطة بدون المسار والعلامات
+    # show map without signs and lines 
     components.html(f"""
     <div style="
         position: fixed;
