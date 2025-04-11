@@ -324,11 +324,9 @@ def create_map():
 # إضافة CSS لتأثير hover على علامات اللغم
 style_block = """
 <style>
-    .mine-pin {
-        transition: transform 0.3s ease, font-size 0.3s ease;
-    }
+    
     .mine-pin:hover {
-        transform: translate(-50%, -100%) scale(1.3);
+       font-size: 100px
     }
 </style>
 """
