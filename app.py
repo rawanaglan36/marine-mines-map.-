@@ -320,24 +320,39 @@ def create_map():
               style="filter: drop-shadow(2px 2px 4px #000);" />
         """
 
-    html_code += "</svg>"
-
     # إضافة علامات اللغم
-    for loc in locations:
-        html_code += f"""
-        <div title="{loc['name']}" style="
-            position: absolute;
-            left: {loc['x']}%;
-            top: {loc['y']}%;
-            transform: translate(-50%, -100%);
-            font-size: 50px;
-            color: deeppink;
-            filter: drop-shadow(2px 2px 6px black);
-        ">📍</div>
-        """
+# إضافة CSS لتأثير hover على علامات اللغم
+style_block = """
+<style>
+    .mine-pin {
+        transition: transform 0.3s ease, font-size 0.3s ease;
+    }
+    .mine-pin:hover {
+        transform: translate(-50%, -100%) scale(1.3);
+    }
+</style>
+"""
 
-    html_code += "</div>"
-    return html_code
+html_code = style_block  # حطي CSS الأول هنا
+
+# توليد علامات اللغم
+for loc in locations:
+    html_code += f"""
+    <div title="{loc['name']}" class="mine-pin" style="
+        position: absolute;
+        left: {loc['x']}%;
+        top: {loc['y']}%;
+        font-size: 50px;
+        color: deeppink;
+        filter: drop-shadow(2px 2px 6px black);
+        transform: translate(-50%, -100%);
+    ">📍</div>
+    """
+
+html_code += "</div>"
+
+components.html(html_code, height=800)
+
 
 # زر المغامرة
 if 'show_map' not in st.session_state:
