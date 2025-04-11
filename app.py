@@ -375,10 +375,10 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-# إعداد الصفحة
+# page setup
 st.set_page_config(page_title="Marine Mines Map", layout="wide")
 
-# إخفاء عناصر Streamlit الافتراضية وتخصيص الزر
+# hide page setting 
 hide_st_style = """
     <style>
     #MainMenu {visibility: hidden;}
@@ -422,15 +422,15 @@ hide_st_style = """
 """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# صورة الخلفية
+# background image 
 background_url = "https://i.imgur.com/bam6oj8.png"
 
-# بيانات الألغام
+# locations of pins 
 locations = [
     {"name": " - لغم مكتبة الاسكندرية - عام 1750", "x": 23, "y": 45},
-    {"name": "لغم الحيط الهادي - عام 1710", "x": 38, "y": 60},
-    {"name": "لغم البحر الاحمر - عام 1640", "x": 58, "y": 65},
-    {"name": "لغم البحر الابيض المتوسط - عام 1620", "x": 72, "y": 50},
+   # {"name": "لغم الحيط الهادي - عام 1710", "x": 38, "y": 60},
+  #  {"name": "لغم البحر الاحمر - عام 1640", "x": 58, "y": 65},
+   # {"name": "لغم البحر الابيض المتوسط - عام 1620", "x": 72, "y": 50},
 ]
 
 # HTML للخريطة
